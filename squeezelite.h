@@ -63,6 +63,17 @@
 #define PORTAUDIO 1
 #endif
 
+#if defined(JACK)
+#undef JACK
+#define JACK      1
+#undef ALSA
+#define ALSA      0
+#undef PORTAUDIO
+#define PORTAUDIO 0
+#else
+#define JACK      0
+#endif
+
 #if LINUX && !defined(SELFPIPE)
 #define EVENTFD   1
 #define SELFPIPE  0
@@ -608,6 +619,12 @@ bool test_open(const char *device, unsigned rates[]);
 void output_init_pa(log_level level, const char *device, unsigned output_buf_size, char *params, unsigned rates[], unsigned rate_delay, unsigned idle);
 void output_close_pa(void);
 void _pa_open(void);
+#endif
+
+#if JACK
+void list_devices(void);
+void output_init_jack(log_level level, const char *device, unsigned output_buf_size, char *params, unsigned rates[], unsigned rate_delay, unsigned idle);
+void output_close_jack(void);
 #endif
 
 // output_stdout.c

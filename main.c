@@ -123,6 +123,9 @@ static void usage(const char *argv0) {
 #if ALSA
 		   " ALSA"
 #endif
+#if JACK
+	           " JACK"
+#endif
 #if PORTAUDIO
 		   " PORTAUDIO"
 #endif
@@ -568,6 +571,9 @@ int main(int argc, char **argv) {
 #if PORTAUDIO
 		output_init_pa(log_output, output_device, output_buf_size, output_params, rates, rate_delay, idle);
 #endif
+#if JACK
+		output_init_jack(log_output, output_device, output_buf_size, output_params, rates, rate_delay, idle);
+#endif
 	}
 
 #if DSD
@@ -612,6 +618,9 @@ int main(int argc, char **argv) {
 #endif
 #if PORTAUDIO
 		output_close_pa();
+#endif
+#if JACK
+		output_close_jack();
 #endif
 	}
 
