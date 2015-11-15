@@ -202,17 +202,14 @@ void output_init_jack(log_level level,
 	const char **ports;
 	jack_status_t status;
 
-	unsigned latency = 0;
-
-	char *l = next_param(params, ':');
+	char *portspec = next_param(params, ':');
 	char *p = next_param(NULL, ':');
-
-	if (l) latency = (unsigned)atoi(l);
 
 	fprintf (stderr, "Enter init_jack\n");
 	loglevel = level;
 
 	LOG_INFO("init output");
+	LOG_INFO ("params: %s, portspec: %s\n", params, portspec);
 
 	client = jack_client_open (CLIENT_NAME, JackNullOption, &status, NULL);
 	if (client == NULL) {
@@ -236,7 +233,6 @@ void output_init_jack(log_level level,
 	jack_set_process_callback (client, process, NULL);
 
 	/* create two ports */
-
 	output_port1 = jack_port_register (client, "output1",
 					  JACK_DEFAULT_AUDIO_TYPE,
 					  JackPortIsOutput, 0);
@@ -265,11 +261,11 @@ void output_init_jack(log_level level,
 	 * "input" to the backend, and capture ports are "output" from
 	 * it.
 	 */
- 	
-	ports = jack_get_ports (client, NULL, NULL,
+	ports = jack_get_ports (client, portspec, NULL,
 				JackPortIsPhysical|JackPortIsInput);
 	if (ports == NULL) {
-		fprintf(stderr, "no physical playback ports\n");
+		fprintf(stderr, "no playback ports match portspec \"%s\"\n",
+			portspec);
 		exit (1);
 	}
 

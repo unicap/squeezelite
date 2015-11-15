@@ -55,6 +55,9 @@ static void usage(const char *argv0) {
 		   "  -a <l>\t\tSpecify Portaudio params to open output device, l = target latency in ms\n"
 #endif
 #endif
+#if JACK
+	       "  -a <portspec>\t\tSpecify Jack port (regex)\n"
+#endif
 		   "  -a <f>\t\tSpecify sample format (16|24|32) of output file when using -o - to output samples to stdout (interleaved little endian only)\n"
 		   "  -b <stream>:<output>\tSpecify internal Stream and Output buffer sizes in Kbytes\n"
 		   "  -c <codec1>,<codec2>\tRestrict codecs to those specified, otherwise load all available codecs; known codecs: " CODECS "\n"
