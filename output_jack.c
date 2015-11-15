@@ -201,6 +201,7 @@ void output_init_jack(log_level level,
 {
 	const char **ports;
 	jack_status_t status;
+	int i;
 
 	char *portspec = next_param(params, ':');
 	char *p = next_param(NULL, ':');
@@ -278,6 +279,13 @@ void output_init_jack(log_level level,
 	}
 
 	jack_free (ports);
+
+	for (i=0; i < MAX_SUPPORTED_SAMPLERATES; i++){
+		rates[i] = 0;
+	}
+
+	rates[0] = jack_get_sample_rate (client);
+	LOG_INFO ("sample rate: %d\n", rates[0]);
 
 	memset(&output, 0, sizeof(output));
 
