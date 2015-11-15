@@ -152,7 +152,7 @@ static int _write_frames(frames_t out_frames, bool silence, s32_t gainL, s32_t g
  */
 
 int
-process (jack_nframes_t nframes, void *arg)
+output_jack_process (jack_nframes_t nframes, void *arg)
 {
 	jack_default_audio_sample_t *out1, *out2;
 	int i;
@@ -231,7 +231,7 @@ void output_init_jack(log_level level,
 		fprintf (stderr, "unique name `%s' assigned\n", client_name);
 	}
 
-	jack_set_process_callback (client, process, NULL);
+	jack_set_process_callback (client, output_jack_process, NULL);
 
 	/* create two ports */
 	output_port1 = jack_port_register (client, "output1",
