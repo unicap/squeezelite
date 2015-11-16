@@ -239,6 +239,15 @@ void output_init_jack(log_level level,
 		fprintf (stderr, "unique name `%s' assigned\n", client_name);
 	}
 
+	for (i=0; i < MAX_SUPPORTED_SAMPLERATES; i++){
+		rates[i] = 0;
+	}
+
+	rates[0] = jack_get_sample_rate (client);
+	LOG_INFO ("sample rate: %d", rates[0]);
+
+	output_init_common(level, device, output_buf_size, rates, idle);
+
 	jack_set_process_callback (client, output_jack_process, NULL);
 
 	/* create two ports */
@@ -288,16 +297,6 @@ void output_init_jack(log_level level,
 
 	jack_free (ports);
 
-	for (i=0; i < MAX_SUPPORTED_SAMPLERATES; i++){
-		rates[i] = 0;
-	}
-
-	rates[0] = jack_get_sample_rate (client);
-	LOG_INFO ("sample rate: %d", rates[0]);
-
-
-
-	output_init_common(level, device, output_buf_size, rates, idle);
 }
 
 void output_close_jack(void) {
