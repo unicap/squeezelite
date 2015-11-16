@@ -122,7 +122,7 @@ static int _write_frames(frames_t out_frames, bool silence, s32_t gainL, s32_t g
 			}
 		)
 
-		memcpy(optr, outputbuf->readp, out_frames * BYTES_PER_FRAME);
+			memcpy(optr, outputbuf->readp, out_frames * BYTES_PER_FRAME);
 
 	} else {
 
@@ -206,12 +206,20 @@ void output_init_jack(log_level level,
 	char *portspec = next_param(params, ':');
 	char *p = next_param(NULL, ':');
 
-	fprintf (stderr, "Enter init_jack\n");
+	LOG_INFO ("Enter init_jack");
 	loglevel = level;
 
-	LOG_INFO("init output");
-	LOG_INFO ("params: %s, portspec: %s\n", params, portspec);
+	LOG_INFO ("init output");
+	LOG_INFO ("params: %s, portspec: %s", params, portspec);
 
+	memset(&output, 0, sizeof(output));
+	/* output.latency = latency; */
+	output.format = 0;
+	output.start_frames = 0;
+	output.write_cb = &_write_frames;
+	output.rate_delay = rate_delay;
+
+	//LOG_INFO("requested latency: %u", output.latency);
 	client = jack_client_open (CLIENT_NAME, JackNullOption, &status, NULL);
 	if (client == NULL) {
 		fprintf (stderr, "jack_client_open() failed, "
@@ -263,7 +271,7 @@ void output_init_jack(log_level level,
 	 * it.
 	 */
 	ports = jack_get_ports (client, portspec, NULL,
-				JackPortIsPhysical|JackPortIsInput);
+				JackPortIsInput);
 	if (ports == NULL) {
 		fprintf(stderr, "no playback ports match portspec \"%s\"\n",
 			portspec);
@@ -285,17 +293,9 @@ void output_init_jack(log_level level,
 	}
 
 	rates[0] = jack_get_sample_rate (client);
-	LOG_INFO ("sample rate: %d\n", rates[0]);
+	LOG_INFO ("sample rate: %d", rates[0]);
 
-	memset(&output, 0, sizeof(output));
 
-	/* output.latency = latency; */
-	output.format = 0;
-	output.start_frames = 0;
-	output.write_cb = &_write_frames;
-	output.rate_delay = rate_delay;
-
-	//LOG_INFO("requested latency: %u", output.latency);
 
 	output_init_common(level, device, output_buf_size, rates, idle);
 }
