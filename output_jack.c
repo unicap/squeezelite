@@ -251,11 +251,11 @@ void output_init_jack(log_level level,
 	jack_set_process_callback (client, output_jack_process, NULL);
 
 	/* create two ports */
-	output_port1 = jack_port_register (client, "output1",
+	output_port1 = jack_port_register (client, "output_1",
 					  JACK_DEFAULT_AUDIO_TYPE,
 					  JackPortIsOutput, 0);
 
-	output_port2 = jack_port_register (client, "output2",
+	output_port2 = jack_port_register (client, "output_2",
 					  JACK_DEFAULT_AUDIO_TYPE,
 					  JackPortIsOutput, 0);
 
